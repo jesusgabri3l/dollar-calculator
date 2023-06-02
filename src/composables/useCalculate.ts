@@ -15,7 +15,12 @@ export const useCalculate = () => {
       try {
         loading.value = true;
         const { data: response } = await axios(
-          'http://data.fixer.io/api/latest?access_key=6afaa6ab54bde19a95b1efe24dc1e04a&symbols=COP&format=1&_gl=1*j0kqc0*_ga*MTk4MjIyODE2MS4xNjg1NTg2NzQ0*_ga_HGV43FGGVM*MTY4NTU4Njc0NC4xLjEuMTY4NTU4Njk4Ni4zNC4wLjA.',
+          'https://api.apilayer.com/fixer/latest?base=USD&symbols=COP',
+          {
+            headers: {
+              apiKey: 'LFMEc6auoxGx43glex1lpPA1OzNh3SmO',
+            },
+          },
         );
         loading.value = false;
         error.value = null;

@@ -28,14 +28,14 @@ const {
     </button>
     <p v-if="loading">Cargando...</p>
     <strong v-if="result && !error && !loading">
-      El resultado es : {{ result }} EUR
+      El resultado es : {{ result }} USD
     </strong>
     <p v-if="error">{{ error }}</p>
   </div>
   <div>
     <input
       v-model="qty2"
-      placeholder="Euros"
+      placeholder="Dolares"
       type="number"
       min="1"
       :data-testid="`input-${EUR_TO_COP}`"
