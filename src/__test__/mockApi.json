@@ -1,0 +1,9 @@
+{
+  "success": true,
+  "timestamp": 1685634603,
+  "base": "EUR",
+  "date": "2023-06-01",
+  "rates": {
+    "COP": 4756.931832
+  }
+}
