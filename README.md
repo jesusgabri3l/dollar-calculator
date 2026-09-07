@@ -1,16 +1,31 @@
-# Vue 3 + TypeScript + Vite + Pinia + ESLint + Prettier + Vitest + @testing-library
+# Dollar Calculator
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Conversor COP ⇄ USD con tasa de cambio en vivo.
 
-## Recommended IDE Setup
+**Demo:** https://jesusgabri3l.github.io/dollar-calculator/
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
+## Stack
 
-## Type Support For `.vue` Imports in TS
+- Vue 3 + `<script setup>` + TypeScript
+- Vite 8
+- Vitest + Testing Library + MSW para tests de componente
+- Tasa de cambio: [open.er-api.com](https://www.exchangerate-api.com/docs/free) (acceso abierto, sin API key)
 
-Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can enable Volar's Take Over mode by following these steps:
+## Desarrollo
 
-1. Run `Extensions: Show Built-in Extensions` from VS Code's command palette, look for `TypeScript and JavaScript Language Features`, then right click and select `Disable (Workspace)`. By default, Take Over mode will enable itself if the default TypeScript extension is disabled.
-2. Reload the VS Code window by running `Developer: Reload Window` from the command palette.
+```bash
+npm install
+npm run dev       # servidor de desarrollo
+npm test          # tests
+npm run lint      # eslint
+npm run build     # typecheck + build de produccion
+npm run preview   # sirve el build de produccion
+```
 
-You can learn more about Take Over mode [here](https://github.com/johnsoncodehk/volar/discussions/471).
+Requiere Node 22.12+ o 24+ (ver `engines` de las dependencias: Vite 8 y Vitest 5).
+
+## Deploy
+
+Cada push a `master` dispara `.github/workflows/deploy.yml`, que corre lint + tests,
+compila y publica `dist/` en GitHub Pages. El `base` en `vite.config.ts` está fijado
+a `/dollar-calculator/` porque el sitio se sirve desde ese subdirectorio.

@@ -1,93 +1,78 @@
-import userEvent from '@testing-library/user-event';
-import { render, screen } from '@testing-library/vue';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { fireEvent, render, screen, waitFor } from '@testing-library/vue';
+import { http, HttpResponse } from 'msw';
+import { describe, expect, it } from 'vitest';
 
 import App from '../App.vue';
-import { COP_TO_USD, USD_TO_COP } from '../composables/useCalculate';
+import { convert, COP_TO_USD, USD_TO_COP } from '../composables/useCalculate';
+import mockResponse from './mockApi.json';
+import { server } from './setup';
 
-beforeEach(() => {
+const RATE = mockResponse.rates.COP;
+const numberFormat = (value: number) =>
+  value.toLocaleString('es-CO', { maximumFractionDigits: 2 });
+
+const renderApp = async () => {
   render(App);
-});
-describe('COP TO USD Tests', () => {
-  it('Should render COP TO USD components', () => {
-    const inputEl = screen.getByTestId(`input-${COP_TO_USD}`);
-    const buttonEl = screen.getByTestId(`button-${COP_TO_USD}`);
+  await screen.findByText(/1 USD =/);
+};
 
-    expect(inputEl).toBeInTheDocument();
-    expect(inputEl).toHaveAttribute('placeholder', 'Pesos');
-    expect(inputEl).toHaveAttribute('type', 'number');
+describe('Dollar Calculator', () => {
+  it('converts the default amount from COP to USD once the rate loads', async () => {
+    await renderApp();
 
-    expect(buttonEl).toBeInTheDocument();
-    expect(buttonEl).toHaveTextContent('Calcular');
+    const expected = numberFormat(convert(100000, COP_TO_USD, RATE));
+    expect(await screen.findByTestId('result')).toHaveTextContent(expected);
   });
 
-  it('Should get the correct value with 10000', async () => {
-    const inputEl = screen.getByTestId(`input-${COP_TO_USD}`);
-    const buttonEl = screen.getByTestId(`button-${COP_TO_USD}`);
+  it('recalculates live as the amount changes, without a submit step', async () => {
+    await renderApp();
 
-    await userEvent.type(inputEl, '10000');
-    expect(inputEl).toHaveValue(10000);
-    await userEvent.click(buttonEl);
-    expect(await screen.findByText('El resultado es : 2.29 USD')).toBeInTheDocument();
+    const input = screen.getByTestId('amount-input');
+    await fireEvent.update(input, '25000');
+
+    const expected = numberFormat(convert(25000, COP_TO_USD, RATE));
+    await waitFor(() => expect(screen.getByTestId('result')).toHaveTextContent(expected));
   });
 
-  it('Should get the correct value with 25000', async () => {
-    const inputEl = screen.getByTestId(`input-${COP_TO_USD}`);
-    const buttonEl = screen.getByTestId(`button-${COP_TO_USD}`);
+  it('swaps direction and carries the previously shown result into the amount field', async () => {
+    await renderApp();
 
-    await userEvent.type(inputEl, '25000');
-    expect(inputEl).toHaveValue(25000);
-    await userEvent.click(buttonEl);
-    expect(await screen.findByText('El resultado es : 5.71 USD')).toBeInTheDocument();
+    const resultBeforeSwap = convert(100000, COP_TO_USD, RATE);
+    expect(screen.getByTestId('result')).toHaveTextContent(
+      numberFormat(resultBeforeSwap),
+    );
+
+    const swapButton = screen.getByTestId('swap-button');
+    await fireEvent.click(swapButton);
+
+    expect(screen.getByLabelText('USD')).toBeInTheDocument();
+    const carriedAmount = parseFloat(
+      (screen.getByTestId('amount-input') as HTMLInputElement).value,
+    );
+    expect(carriedAmount).toBeCloseTo(resultBeforeSwap, 2);
+
+    const expected = numberFormat(convert(carriedAmount, USD_TO_COP, RATE));
+    expect(screen.getByTestId('result')).toHaveTextContent(expected);
   });
 
-  it('Should show error when no input provided', async () => {
-    const inputEl = screen.getByTestId(`input-${COP_TO_USD}`);
-    const buttonEl = screen.getByTestId(`button-${COP_TO_USD}`);
-    expect(inputEl).toHaveValue(null);
-    await userEvent.click(buttonEl);
-    expect(await screen.findByText('Parece que algo salio mal...')).toBeInTheDocument();
-  });
-});
+  it('shows a dash instead of a result when the amount is empty', async () => {
+    await renderApp();
 
-describe('USD TO COP Tests', () => {
-  it('Should render USD TO COP components', () => {
-    const inputEl = screen.getByTestId(`input-${USD_TO_COP}`);
-    const buttonEl = screen.getByTestId(`button-${USD_TO_COP}`);
+    const input = screen.getByTestId('amount-input');
+    await fireEvent.update(input, '');
 
-    expect(inputEl).toBeInTheDocument();
-    expect(inputEl).toHaveAttribute('placeholder', 'Dolares');
-    expect(inputEl).toHaveAttribute('type', 'number');
-
-    expect(buttonEl).toBeInTheDocument();
-    expect(buttonEl).toHaveTextContent('Calcular');
+    expect(screen.getByTestId('result')).toHaveTextContent('—');
   });
 
-  it('Should get the correct value with 3 USD', async () => {
-    const inputEl = screen.getByTestId(`input-${USD_TO_COP}`);
-    const buttonEl = screen.getByTestId(`button-${USD_TO_COP}`);
+  it('shows an error message when the rate request fails', async () => {
+    server.use(
+      http.get('https://open.er-api.com/v6/latest/USD', () => HttpResponse.error()),
+    );
 
-    await userEvent.type(inputEl, '3');
-    expect(inputEl).toHaveValue(3);
-    await userEvent.click(buttonEl);
-    expect(await screen.findByText('El resultado es : 13127.25 COP')).toBeInTheDocument();
-  });
+    render(App);
 
-  it('Should get the correct value with 20', async () => {
-    const inputEl = screen.getByTestId(`input-${USD_TO_COP}`);
-    const buttonEl = screen.getByTestId(`button-${USD_TO_COP}`);
-
-    await userEvent.type(inputEl, '20');
-    expect(inputEl).toHaveValue(20);
-    await userEvent.click(buttonEl);
-    expect(await screen.findByText('El resultado es : 87515.00 COP')).toBeInTheDocument();
-  });
-
-  it('Should show error when no input provided', async () => {
-    const inputEl = screen.getByTestId(`input-${COP_TO_USD}`);
-    const buttonEl = screen.getByTestId(`button-${COP_TO_USD}`);
-    expect(inputEl).toHaveValue(null);
-    await userEvent.click(buttonEl);
-    expect(await screen.findByText('Parece que algo salio mal...')).toBeInTheDocument();
+    expect(await screen.findByTestId('error')).toHaveTextContent(
+      'Parece que algo salio mal...',
+    );
   });
 });

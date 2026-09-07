@@ -14,7 +14,7 @@ export const handlers = [
   ),
 ];
 
-const server = setupServer(...handlers);
+export const server = setupServer(...handlers);
 
 beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
 afterAll(() => server.close());
