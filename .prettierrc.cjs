@@ -1,4 +1,3 @@
-
 module.exports = {
   semi: true,
   trailingComma: 'all',
@@ -6,7 +5,7 @@ module.exports = {
   printWidth: 90,
   tabWidth: 2,
   endOfLine: 'auto',
-}
+};
 
 // {
 //   "arrowParens": "always",

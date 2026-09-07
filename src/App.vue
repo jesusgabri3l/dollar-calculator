@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import { COP_TO_EUR, EUR_TO_COP, useCalculate } from './composables/useCalculate';
+import { COP_TO_USD, USD_TO_COP, useCalculate } from './composables/useCalculate';
 
 const qty = ref('');
 const qty2 = ref('');
@@ -21,9 +21,9 @@ const {
       placeholder="Pesos"
       type="number"
       min="1"
-      :data-testid="`input-${COP_TO_EUR}`"
+      :data-testid="`input-${COP_TO_USD}`"
     />
-    <button :data-testid="`button-${COP_TO_EUR}`" @click="handleClick(qty, COP_TO_EUR)">
+    <button :data-testid="`button-${COP_TO_USD}`" @click="handleClick(qty, COP_TO_USD)">
       Calcular
     </button>
     <p v-if="loading">Cargando...</p>
@@ -38,9 +38,9 @@ const {
       placeholder="Dolares"
       type="number"
       min="1"
-      :data-testid="`input-${EUR_TO_COP}`"
+      :data-testid="`input-${USD_TO_COP}`"
     />
-    <button :data-testid="`button-${EUR_TO_COP}`" @click="handleClick2(qty2, EUR_TO_COP)">
+    <button :data-testid="`button-${USD_TO_COP}`" @click="handleClick2(qty2, USD_TO_COP)">
       Calcular
     </button>
     <p v-if="loading2">Cargando...</p>

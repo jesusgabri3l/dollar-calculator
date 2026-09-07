@@ -3,15 +3,15 @@ import { render, screen } from '@testing-library/vue';
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import App from '../App.vue';
-import { COP_TO_EUR, EUR_TO_COP } from '../composables/useCalculate';
+import { COP_TO_USD, USD_TO_COP } from '../composables/useCalculate';
 
 beforeEach(() => {
   render(App);
 });
 describe('COP TO USD Tests', () => {
   it('Should render COP TO USD components', () => {
-    const inputEl = screen.getByTestId(`input-${COP_TO_EUR}`);
-    const buttonEl = screen.getByTestId(`button-${COP_TO_EUR}`);
+    const inputEl = screen.getByTestId(`input-${COP_TO_USD}`);
+    const buttonEl = screen.getByTestId(`button-${COP_TO_USD}`);
 
     expect(inputEl).toBeInTheDocument();
     expect(inputEl).toHaveAttribute('placeholder', 'Pesos');
@@ -22,8 +22,8 @@ describe('COP TO USD Tests', () => {
   });
 
   it('Should get the correct value with 10000', async () => {
-    const inputEl = screen.getByTestId(`input-${COP_TO_EUR}`);
-    const buttonEl = screen.getByTestId(`button-${COP_TO_EUR}`);
+    const inputEl = screen.getByTestId(`input-${COP_TO_USD}`);
+    const buttonEl = screen.getByTestId(`button-${COP_TO_USD}`);
 
     await userEvent.type(inputEl, '10000');
     expect(inputEl).toHaveValue(10000);
@@ -32,8 +32,8 @@ describe('COP TO USD Tests', () => {
   });
 
   it('Should get the correct value with 25000', async () => {
-    const inputEl = screen.getByTestId(`input-${COP_TO_EUR}`);
-    const buttonEl = screen.getByTestId(`button-${COP_TO_EUR}`);
+    const inputEl = screen.getByTestId(`input-${COP_TO_USD}`);
+    const buttonEl = screen.getByTestId(`button-${COP_TO_USD}`);
 
     await userEvent.type(inputEl, '25000');
     expect(inputEl).toHaveValue(25000);
@@ -42,8 +42,8 @@ describe('COP TO USD Tests', () => {
   });
 
   it('Should show error when no input provided', async () => {
-    const inputEl = screen.getByTestId(`input-${COP_TO_EUR}`);
-    const buttonEl = screen.getByTestId(`button-${COP_TO_EUR}`);
+    const inputEl = screen.getByTestId(`input-${COP_TO_USD}`);
+    const buttonEl = screen.getByTestId(`button-${COP_TO_USD}`);
     expect(inputEl).toHaveValue(null);
     await userEvent.click(buttonEl);
     expect(await screen.findByText('Parece que algo salio mal...')).toBeInTheDocument();
@@ -52,8 +52,8 @@ describe('COP TO USD Tests', () => {
 
 describe('USD TO COP Tests', () => {
   it('Should render USD TO COP components', () => {
-    const inputEl = screen.getByTestId(`input-${EUR_TO_COP}`);
-    const buttonEl = screen.getByTestId(`button-${EUR_TO_COP}`);
+    const inputEl = screen.getByTestId(`input-${USD_TO_COP}`);
+    const buttonEl = screen.getByTestId(`button-${USD_TO_COP}`);
 
     expect(inputEl).toBeInTheDocument();
     expect(inputEl).toHaveAttribute('placeholder', 'Dolares');
@@ -64,8 +64,8 @@ describe('USD TO COP Tests', () => {
   });
 
   it('Should get the correct value with 3 USD', async () => {
-    const inputEl = screen.getByTestId(`input-${EUR_TO_COP}`);
-    const buttonEl = screen.getByTestId(`button-${EUR_TO_COP}`);
+    const inputEl = screen.getByTestId(`input-${USD_TO_COP}`);
+    const buttonEl = screen.getByTestId(`button-${USD_TO_COP}`);
 
     await userEvent.type(inputEl, '3');
     expect(inputEl).toHaveValue(3);
@@ -74,8 +74,8 @@ describe('USD TO COP Tests', () => {
   });
 
   it('Should get the correct value with 20', async () => {
-    const inputEl = screen.getByTestId(`input-${EUR_TO_COP}`);
-    const buttonEl = screen.getByTestId(`button-${EUR_TO_COP}`);
+    const inputEl = screen.getByTestId(`input-${USD_TO_COP}`);
+    const buttonEl = screen.getByTestId(`button-${USD_TO_COP}`);
 
     await userEvent.type(inputEl, '20');
     expect(inputEl).toHaveValue(20);
@@ -84,8 +84,8 @@ describe('USD TO COP Tests', () => {
   });
 
   it('Should show error when no input provided', async () => {
-    const inputEl = screen.getByTestId(`input-${COP_TO_EUR}`);
-    const buttonEl = screen.getByTestId(`button-${COP_TO_EUR}`);
+    const inputEl = screen.getByTestId(`input-${COP_TO_USD}`);
+    const buttonEl = screen.getByTestId(`button-${COP_TO_USD}`);
     expect(inputEl).toHaveValue(null);
     await userEvent.click(buttonEl);
     expect(await screen.findByText('Parece que algo salio mal...')).toBeInTheDocument();
