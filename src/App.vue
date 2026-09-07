@@ -8,8 +8,10 @@ import {
   USD_TO_COP,
   useExchangeRate,
 } from './composables/useCalculate';
+import { useTheme } from './composables/useTheme';
 
 const { rate, lastUpdated, loading, error, fetchRate } = useExchangeRate();
+const { theme, toggleTheme } = useTheme();
 
 const amount = ref('100000');
 const direction = ref<ConversionType>(COP_TO_USD);
@@ -50,7 +52,20 @@ onMounted(fetchRate);
 <template>
   <main class="page">
     <section class="card" aria-labelledby="title">
-      <h1 id="title">Dollar Calculator</h1>
+      <div class="card__header">
+        <h1 id="title">Dollar Calculator</h1>
+        <button
+          class="theme-toggle"
+          type="button"
+          data-testid="theme-toggle"
+          :aria-label="
+            theme === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'
+          "
+          @click="toggleTheme"
+        >
+          {{ theme === 'dark' ? '☀️' : '🌙' }}
+        </button>
+      </div>
 
       <p class="rate" data-testid="rate-info">
         <template v-if="loading && !rate">Cargando tasa de cambio...</template>
@@ -115,9 +130,33 @@ onMounted(fetchRate);
   border: 1px solid var(--border);
 }
 
-h1 {
+.card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
   margin: 0 0 0.25rem;
+}
+
+h1 {
+  margin: 0;
   font-size: 1.375rem;
+}
+
+.theme-toggle {
+  flex-shrink: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-size: 1.125rem;
+  line-height: 1;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--input-bg);
+  }
 }
 
 .rate {
